@@ -1,0 +1,24 @@
+diff -up yosys-5199aafca0579aceb3b4a2ad1af610bcb4ccfcd1/manual/CHAPTER_Prog/Makefile.mancfginc yosys-5199aafca0579aceb3b4a2ad1af610bcb4ccfcd1/manual/CHAPTER_Prog/Makefile
+--- yosys-5199aafca0579aceb3b4a2ad1af610bcb4ccfcd1/manual/CHAPTER_Prog/Makefile.mancfginc	2016-09-10 08:24:08.000000000 -0600
++++ yosys-5199aafca0579aceb3b4a2ad1af610bcb4ccfcd1/manual/CHAPTER_Prog/Makefile	2016-09-13 03:52:13.236296221 -0600
+@@ -5,7 +5,7 @@ test: stubnets.so
+ 	tail test1.log test2.log test3.log
+ 
+ stubnets.so: stubnets.cc
+-	yosys-config --exec --cxx --cxxflags --ldflags -o $@ -shared $^ --ldlibs
++	yosys-config --exec --cxx --cxxflags -I../.. --ldflags -o $@ -shared $^ --ldlibs
+ 
+ clean:
+ 	rm -f test1.log test2.log test3.log
+diff -up yosys-5199aafca0579aceb3b4a2ad1af610bcb4ccfcd1/manual/PRESENTATION_Prog/Makefile.mancfginc yosys-5199aafca0579aceb3b4a2ad1af610bcb4ccfcd1/manual/PRESENTATION_Prog/Makefile
+--- yosys-5199aafca0579aceb3b4a2ad1af610bcb4ccfcd1/manual/PRESENTATION_Prog/Makefile.mancfginc	2016-09-13 03:47:52.222413004 -0600
++++ yosys-5199aafca0579aceb3b4a2ad1af610bcb4ccfcd1/manual/PRESENTATION_Prog/Makefile	2016-09-13 03:50:38.875169350 -0600
+@@ -2,7 +2,7 @@
+ all: test0.log test1.log test2.log
+ 
+ my_cmd.so: my_cmd.cc
+-	../../yosys-config --exec --cxx --cxxflags --ldflags -o my_cmd.so -shared my_cmd.cc --ldlibs
++	../../yosys-config --exec --cxx --cxxflags -I../.. --ldflags -o my_cmd.so -shared my_cmd.cc --ldlibs
+ 
+ test0.log: my_cmd.so
+ 	../../yosys -Ql test0.log_new -m ./my_cmd.so -p 'my_cmd foo bar' absval_ref.v

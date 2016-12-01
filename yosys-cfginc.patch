@@ -1,0 +1,12 @@
+diff -up yosys-yosys-0.7/Makefile.cfginc yosys-yosys-0.7/Makefile
+--- yosys-yosys-0.7/Makefile.cfginc	2016-11-26 17:43:09.471803379 -0700
++++ yosys-yosys-0.7/Makefile	2016-11-26 17:56:43.721367803 -0700
+@@ -378,7 +378,7 @@ kernel/version_$(GIT_REV).cc: $(YOSYS_SR
+ 	$(Q) mkdir -p kernel && echo "namespace Yosys { extern const char *yosys_version_str; const char *yosys_version_str=\"$(YOSYS_VER_STR)\"; }" > kernel/version_$(GIT_REV).cc
+ 
+ yosys-config: misc/yosys-config.in
+-	$(P) $(SED) -e 's#@CXXFLAGS@#$(subst -I. -I"$(YOSYS_SRC)",-I"$(DATDIR)/include",$(CXXFLAGS))#;' \
++	$(P) $(SED) -e 's#@CXXFLAGS@#$(subst -I. -I"$(YOSYS_SRC)",-I"$(PREFIX)/include/yosys",$(CXXFLAGS))#;' \
+ 			-e 's#@CXX@#$(CXX)#;' -e 's#@LDFLAGS@#$(LDFLAGS)#;' -e 's#@LDLIBS@#$(LDLIBS)#;' \
+ 			-e 's#@BINDIR@#$(BINDIR)#;' -e 's#@DATDIR@#$(DATDIR)#;' < $< > yosys-config
+ 	$(Q) chmod +x yosys-config
