@@ -6,7 +6,7 @@
 
 Name:           yosys
 Version:        0.7
-Release:        2%{?dist}
+Release:        3%{?dist}
 # For git snapshot: 2.20160923git%{shortcommit0}%{?dist}
 Summary:        Yosys Open SYnthesis Suite, including Verilog synthesizer
 License:        ISC and MIT
@@ -177,6 +177,9 @@ make test ABCEXTERNAL=%{_bindir}/abc SEED=314159265359
 
 
 %changelog
+* Thu Jan 12 2017 Igor Gnatenko <ignatenko@redhat.com> - 0.7-3
+- Rebuild for readline 7.x
+
 * Mon Dec 19 2016 Miro Hrončok <mhroncok@redhat.com> - 0.7-2
 - Rebuild for Python 3.6
 
