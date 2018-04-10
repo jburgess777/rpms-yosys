@@ -6,7 +6,7 @@
 
 Name:           yosys
 Version:        0.7
-Release:        8%{?dist}
+Release:        9%{?dist}
 # For git snapshot: 2.20160923git%{shortcommit0}%{?dist}
 Summary:        Yosys Open SYnthesis Suite, including Verilog synthesizer
 License:        ISC and MIT
@@ -177,6 +177,9 @@ make test ABCEXTERNAL=%{_bindir}/abc SEED=314159265359
 
 
 %changelog
+* Tue Apr 10 2018 Filipe Rosset <rosset.filipe@gmail.com> - 0.7-9
+- rebuilt due new iverilog
+
 * Fri Feb 09 2018 Fedora Release Engineering <releng@fedoraproject.org> - 0.7-8
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
 
