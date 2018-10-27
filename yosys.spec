@@ -5,21 +5,21 @@
 %global __python %{__python3}
 
 Name:           yosys
-Version:        0.7
-Release:        10%{?dist}
+Version:        0.8
+Release:        1%{?dist}
 # For git snapshot: 2.20160923git%{shortcommit0}%{?dist}
 Summary:        Yosys Open SYnthesis Suite, including Verilog synthesizer
 License:        ISC and MIT
 URL:            http://www.clifford.at/yosys/
 
-Source0:        https://github.com/cliffordwolf/yosys/archive/yosys-0.7.tar.gz
-# For git snapshot: https://github.com/cliffordwolf/%{name}/archive/%{commit0}.tar.gz
+Source0:        https://github.com/YosysHQ/yosys/archive/yosys-0.8.tar.gz
+# For git snapshot: https://github.com/YosysHQ/%{name}/archive/%{commit0}.tar.gz
 Source1:        https://github.com/mdaines/viz.js/releases/download/0.0.3/viz.js
 
 # man pages written for Debian:
 Source2:        http://http.debian.net/debian/pool/main/y/yosys/yosys_0.7-2.debian.tar.xz
 # requested that upstream include those man pages:
-#   https://github.com/cliffordwolf/yosys/issues/278
+#   https://github.com/YosysHQ/yosys/issues/278
 
 # Fedora-specific patch:
 # Change the substitution done when making yosys-config so that it outputs
@@ -31,6 +31,10 @@ Patch1:         yosys-cfginc.patch
 # relative path for includes, as they're not installed in build host
 # filesystem.
 Patch2:         yosys-mancfginc.patch
+
+# Fix assert with empty label
+# https://github.com/YosysHQ/yosys/pull/680
+Patch3:         yosys-empty-label.patch
 
 
 BuildRequires:  bison flex readline-devel pkgconfig
@@ -89,6 +93,7 @@ Development files to build Yosys synthesizer plugins.
 
 %patch1 -p1 -b .cfginc
 %patch2 -p1 -b .mancfginc
+%patch3 -p1 -b .label
 
 # Ensure that Makefile doesn't wget viz.js
 cp %{SOURCE1} .
@@ -100,7 +105,7 @@ cp %{SOURCE1} .
 # Remove shebang from Python files that aren't executable,
 # without changing timestamps
 # requested that upstream remove shebang:
-#   https://github.com/cliffordwolf/yosys/issues/279
+#   https://github.com/YosysHQ/yosys/issues/279
 for f in backends/smt2/smtio.py
 do
     sed '/#!\/usr\/bin\/env python3/d' $f >$f.new
@@ -128,14 +133,15 @@ done
 
 
 %build
-make %{?_smp_mflags} CFLAGS="%{optflags}" PREFIX="%{_prefix}" ABCEXTERNAL=%{_bindir}/abc all manual
+%set_build_flags
+make %{?_smp_mflags} PREFIX="%{_prefix}" ABCEXTERNAL=%{_bindir}/abc PRETTY=0 all manual
 
 %global man_date "`stat -c %y debian/man/yosys-smtbmc.txt | awk '{ print $1 }'`"
 txt2man -d %{man_date} -t YOSYS-SMTBMC debian/man/yosys-smtbmc.txt >yosys-smtbmc.1
 
 
 %install
-%make_install PREFIX="%{_prefix}" ABCEXTERNAL=%{_bindir}/abc
+%make_install PREFIX="%{_prefix}" ABCEXTERNAL=%{_bindir}/abc STRIP=/bin/true
 
 # move include files to includedir
 install -d -m0755 %{buildroot}%{_includedir}
@@ -155,8 +161,8 @@ make test ABCEXTERNAL=%{_bindir}/abc SEED=314159265359
 
 %files
 # license texts requested upstream:
-#   https://github.com/cliffordwolf/yosys/issues/263
-%doc README
+#   https://github.com/YosysHQ/yosys/issues/263
+%doc README.md
 %{_bindir}/%{name}
 %{_bindir}/%{name}-filterlib
 %{_bindir}/%{name}-smtbmc
@@ -177,6 +183,12 @@ make test ABCEXTERNAL=%{_bindir}/abc SEED=314159265359
 
 
 %changelog
+* Sat Oct 27 2018 Jon Burgess <jburgess777@gmail.com> - 0.8-1
+- Updated to latest upstream release
+- Make sure package built with Fedora compile flags
+- Fix assert while running tests
+- Fixes FTBFS #1606769
+
 * Sat Jul 14 2018 Fedora Release Engineering <releng@fedoraproject.org> - 0.7-10
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
 

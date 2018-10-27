@@ -1,0 +1,36 @@
+From 6732e566321b828c83b563d24a10ac31c6d03e28 Mon Sep 17 00:00:00 2001
+From: Jon Burgess <jburgess777@gmail.com>
+Date: Sun, 28 Oct 2018 14:49:09 +0000
+Subject: [PATCH] Avoid assert when label is an empty string
+
+Calling back() on an empty string is not allowed and triggers
+an assert with recent gcc:
+
+$ cd manual/PRESENTATION_Intro
+$ ../../yosys counter.ys
+...
+/usr/include/c++/8/bits/basic_string.h:1136: std::__cxx11::basic_string<_CharT, _Traits, _Alloc>::reference std::__cxx11::basic_string<_CharT, _Traits, _Alloc>::back() [with _CharT = char; _Traits = std::char_traits<char>; _Alloc = std::allocator<char>; std::__cxx11::basic_string<_CharT, _Traits, _Alloc>::reference = char&]: Assertion '!empty()' failed.
+
+802             if (label.back() == ':' && GetSize(label) > 1)
+(gdb) p label
+$1 = ""
+---
+ kernel/yosys.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/yosys.cc b/kernel/yosys.cc
+index 21eeadaa..f002955a 100644
+--- a/kernel/yosys.cc
++++ b/kernel/yosys.cc
+@@ -799,7 +799,7 @@ static void handle_label(std::string &command, bool &from_to_active, const std::
+ 	while (pos < GetSize(command) && command[pos] != ' ' && command[pos] != '\t' && command[pos] != '\r' && command[pos] != '\n')
+ 		label += command[pos++];
+ 
+-	if (label.back() == ':' && GetSize(label) > 1)
++	if (GetSize(label) > 1 && label.back() == ':')
+ 	{
+ 		label = label.substr(0, GetSize(label)-1);
+ 		command = command.substr(pos);
+-- 
+2.17.2
+
