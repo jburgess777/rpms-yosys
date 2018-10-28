@@ -6,7 +6,7 @@
 
 Name:           yosys
 Version:        0.8
-Release:        1%{?dist}
+Release:        2%{?dist}
 # For git snapshot: 2.20160923git%{shortcommit0}%{?dist}
 Summary:        Yosys Open SYnthesis Suite, including Verilog synthesizer
 License:        ISC and MIT
@@ -37,6 +37,7 @@ Patch2:         yosys-mancfginc.patch
 Patch3:         yosys-empty-label.patch
 
 
+BuildRequires:  gcc-c++
 BuildRequires:  bison flex readline-devel pkgconfig
 BuildRequires:  tcl-devel libffi-devel
 BuildRequires:  abc >= 1.01-9
@@ -183,6 +184,9 @@ make test ABCEXTERNAL=%{_bindir}/abc SEED=314159265359
 
 
 %changelog
+* Sun Oct 28 2018 Jon Burgess <jburgess777@gmail.com> - 0.8-2
+- Add buildreq for g++
+
 * Sat Oct 27 2018 Jon Burgess <jburgess777@gmail.com> - 0.8-1
 - Updated to latest upstream release
 - Make sure package built with Fedora compile flags
